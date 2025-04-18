@@ -1,3 +1,4 @@
+import base64
 import mimetypes
 import os
 import requests
@@ -43,3 +44,27 @@ def upload_files(files: list, upload_path: str, overwrite=False):
         return {"status": "error", "data": {"code": 500, "msg": f"HTTP error occurred: {http_err}"}}
     except Exception as err:
         return {"status": "error", "data": {"code": 500, "msg": f"An error occurred: {err}"}}
+    
+
+def download_image(url):
+    """
+    下载图片的函数。
+    
+    参数:
+        url (str): 图片的 URL
+    
+    返回:
+        格式化后的 Base64 编码的图片数据
+    """
+    # 下载图片的逻辑
+    try:
+        # 获取图像数据
+        response = requests.get(url)
+        response.raise_for_status()  # 检查是否成功请求
+        
+        # 将图像数据转换为 Base64 编码
+        base64_image = base64.b64encode(response.content).decode('utf-8')
+        
+        return f"data:image/png;base64,{base64_image}"
+    except requests.exceptions.RequestException as e:
+        return None
